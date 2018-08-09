@@ -37,10 +37,11 @@ case class WskProps(
     WhiskProperties.getFileRelativeToWhiskHome("ansible/roles/nginx/files/openwhisk-client-cert.pem").getAbsolutePath,
   key: String =
     WhiskProperties.getFileRelativeToWhiskHome("ansible/roles/nginx/files/openwhisk-client-key.pem").getAbsolutePath,
-  namespace: String = "_",
+  namespace: String = "guest",
   apiversion: String = "v1",
   apihost: String = WhiskProperties.getEdgeHost,
-  token: String = "") {
+  token: String = "",
+  iam: Boolean = false) {
   def overrides = Seq("-i", "--apihost", apihost, "--apiversion", apiversion)
   def writeFile(propsfile: File) = {
     val propsStr = s"""NAMESPACE=$namespace
