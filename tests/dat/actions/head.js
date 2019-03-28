@@ -7,9 +7,15 @@
  * @param num Number of lines to return.
  */
 function main(msg) {
-    var lines = msg.lines || [];
-    var num = msg.num || 1;
-    var head = lines.slice(0, num);
-    console.log('head get first ' + num + ' lines of ' + lines + ': ' + head);
-    return {lines: head, num: num};
+    if (msg) {
+        console.log('msg');
+        var lines = msg.lines || [];
+        var num = msg.num || 1;
+        var head = lines.slice(0, num);
+        console.log('head get first ' + num + ' lines of ' + lines + ': ' + head);
+        return {lines: head, num: num};
+    } else {
+        console.log('msg undefined');
+        return new Error("msg undefined")
+    }
 }
