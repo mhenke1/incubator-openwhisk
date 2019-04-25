@@ -87,7 +87,7 @@ class DockerClientWithFileAccess(dockerHost: Option[String] = None,
    * @param containerId Id of the desired Docker container
    * @return canonical location of the container's log file
    */
-  protected def containerLogFile(containerId: ContainerId) = {
+  override def containerLogFile(containerId: ContainerId) = {
     new File(containerDirectory(containerId), s"${containerId.asString}-json.log").getCanonicalFile()
   }
 
@@ -98,7 +98,7 @@ class DockerClientWithFileAccess(dockerHost: Option[String] = None,
    * @param configFile the container's configuration file in JSON format
    * @return contents of configuration file as JSON object
    */
-  protected def configFileContents(configFile: File): Future[JsObject] = Future {
+  override def configFileContents(configFile: File): Future[JsObject] = Future {
     blocking { // Needed due to synchronous file operations
       val source = Source.fromFile(configFile)
       val config = try source.mkString
@@ -169,4 +169,8 @@ trait DockerApiWithFileAccess extends DockerApi {
   def rawContainerLogs(containerId: ContainerId,
                        fromPos: Long,
                        pollInterval: Option[FiniteDuration]): AkkaSource[ByteString, Any]
+
+  def configFileContents(configFile: File): Future[JsObject] = { Future.successful(JsObject()) }
+
+  def containerLogFile(containerId: ContainerId): File = File.createTempFile("foo", "bar")
 }
