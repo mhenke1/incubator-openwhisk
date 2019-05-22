@@ -5,6 +5,12 @@
 
 ./copyJMXFiles.sh
 
+echo "******MH"
+ls -la /root
+cat /root/jmxremote.access
+cat /root/jmxremote.password
+echo "******MH END
+
 export INVOKER_OPTS
 INVOKER_OPTS="$INVOKER_OPTS $(./transformEnvironment.sh)"
 
