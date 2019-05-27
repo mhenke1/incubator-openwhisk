@@ -23,19 +23,12 @@ import java.time.Instant
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 import scala.math.max
-
 import org.junit.runner.RunWith
-
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.junit.JUnitRunner
-
-import common.TestHelpers
 import common.TestUtils._
-import common.WhiskProperties
-import common.WskOperations
-import common.WskProps
-import common.WskTestHelpers
+import common.{TestHelpers, WhiskProperties, WskOperations, WskProps, WskTestHelpers}
 
 /**
  * Tests for testing the CLI "api" subcommand.  Most of these tests require a deployed backend.
@@ -61,13 +54,15 @@ abstract class BaseApiGwTests extends TestHelpers with WskTestHelpers with Befor
    * settle the throttle when there isn't enough capacity to handle the test.
    */
   def checkThrottle(maxInvocationsBeforeThrottle: Int = maxActionsPerMin, throttlePercent: Int = 50) = {
+    val reducedMaxInvocationsBeforeThrottle = max((maxInvocationsBeforeThrottle * 0.5).toInt, 1);
     val t = Instant.now
     val tminus60 = t.minusSeconds(60)
     val invocationsLast60Seconds = invocationTimes.filter(_.isAfter(tminus60)).sorted
     val invocationCount = invocationsLast60Seconds.length
     println(s"Action invokes within last minute: ${invocationCount}")
+    println(s"Allowed invokes per minute: ${reducedMaxInvocationsBeforeThrottle}")
 
-    if (invocationCount >= maxInvocationsBeforeThrottle && throttlePercent >= 1) {
+    if (invocationCount >= reducedMaxInvocationsBeforeThrottle && throttlePercent >= 1) {
       val numInvocationsToClear = max(invocationCount / (100 / throttlePercent), 1)
       val invocationToClear = invocationsLast60Seconds(numInvocationsToClear - 1)
       println(
