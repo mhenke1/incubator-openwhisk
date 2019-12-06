@@ -255,8 +255,7 @@ gradle.projectsEvaluated {
     tasks.withType(ScalaCompile) {
         scalaCompileOptions.additionalParameters = gradle.scala.compileFlags
         configure(scalaCompileOptions.forkOptions) {
-            memoryMaximumSize = '5g'
-            jvmArgs = ['-XX:+UseG1GC']
+            memoryMaximumSize = '1g'
         }
     }
 
